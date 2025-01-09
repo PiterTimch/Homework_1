@@ -70,7 +70,7 @@ class Server
                 Console.WriteLine("--------------------------------------");
                 DisplayLog($"Client {client.RemoteEndPoint} connected to server");
 
-                await HandleClientAsync(client);
+                Task.Run(() => HandleClientAsync(client));
                 Console.WriteLine("--------------------------------------\n");
             }
         }
@@ -90,7 +90,9 @@ class Server
             {
                 bytes = await client.ReceiveAsync(buffer, SocketFlags.None);
                 string message = Encoding.Unicode.GetString(buffer, 0, bytes);
-                Console.WriteLine(message);
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine($"{message} from client: {client.RemoteEndPoint}");
+                Console.WriteLine("--------------------------------------\n");
             } while (client.Available > 0);
 
             string response = $"Message received at {DateTime.Now}";
